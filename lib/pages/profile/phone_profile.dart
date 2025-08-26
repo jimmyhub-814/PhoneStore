@@ -1,5 +1,4 @@
-import 'package:collection/collection.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:collection/collection.dart'; 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:phone_store/models/cart.dart';
@@ -21,7 +20,7 @@ class PhoneProfilePage extends StatefulWidget {
 }
 
 class _PhoneProfilePageState extends State<PhoneProfilePage> {
-  @override
+ 
   void addToCart(String id, int quantity) {
     final cartProvider = context.read<CartProvider>();
 
