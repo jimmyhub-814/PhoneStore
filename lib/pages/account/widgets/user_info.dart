@@ -319,7 +319,7 @@ class _UserInfoPageState extends State<UserInfoPage> {
                         ListTile(
                           leading: Text('Số điện thoại'),
                           title: Text(
-                            '0852711187',
+                            user['userPhone'],
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(

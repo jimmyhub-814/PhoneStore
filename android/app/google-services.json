@@ -1,0 +1,82 @@
+{
+  "project_info": {
+    "project_number": "391307996951",
+    "project_id": "phone-store-ae5d0",
+    "storage_bucket": "phone-store-ae5d0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391307996951:android:fddb7486937f2156065152",
+        "android_client_info": {
+          "package_name": "com.phoneStore.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391307996951-o3u5rq2ijhmkm3unjj1qh0ui0aomobhs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVMi9WKx-EYA-fMMUl4Ah9cr0MvKU22BQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391307996951-o3u5rq2ijhmkm3unjj1qh0ui0aomobhs.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "391307996951-fj25fqj4142ovi35643lod1bt6vh7hm1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.phoneStore.app"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:391307996951:android:bd6b897aa4b2a3ab065152",
+        "android_client_info": {
+          "package_name": "com.phoneStore.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "391307996951-o3u5rq2ijhmkm3unjj1qh0ui0aomobhs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVMi9WKx-EYA-fMMUl4Ah9cr0MvKU22BQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "391307996951-o3u5rq2ijhmkm3unjj1qh0ui0aomobhs.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "391307996951-fj25fqj4142ovi35643lod1bt6vh7hm1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.phoneStore.app"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

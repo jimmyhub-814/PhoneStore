@@ -7,11 +7,13 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:phone_store/models/user.dart';
+import 'package:phone_store/pages/home_page/home_page.dart';
+import 'package:phone_store/pages/login_page/login_page.dart';
 
 class RegisterPage extends StatefulWidget {
-  final VoidCallback showLoginPage;
+  // final VoidCallback showLoginPage;
 
-  const RegisterPage({super.key, required this.showLoginPage});
+  const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
@@ -20,6 +22,7 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   bool isSee1 = true;
   bool isSee2 = true;
+
   final _emailController = TextEditingController();
   final _passController = TextEditingController();
   final _confirmController = TextEditingController();
@@ -27,11 +30,13 @@ class _RegisterPageState extends State<RegisterPage> {
   final _dateController = TextEditingController();
   final _genderController = TextEditingController();
   final _phoneController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   final ImagePicker picker = ImagePicker();
 
   XFile? _pickedImage;
   String? userImg;
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -44,24 +49,17 @@ class _RegisterPageState extends State<RegisterPage> {
     super.dispose();
   }
 
-  @override
   Future addUserDetails(UserApp userapp) async {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
         throw Exception("User is not authenticated.");
-      }
-
-      String userId = user.uid;
-      print("Authenticated user ID: $userId"); // Debugging log
-
+      } 
       final userCartRef =
-          FirebaseFirestore.instance.collection('users').doc(userId);
+          FirebaseFirestore.instance.collection('users').doc(user.uid);
       await userCartRef.set(
         userapp.toMap(),
       );
-
-      print("User details added successfully for user ID: $userId");
     } catch (e) {
       print("Failed to add user details: $e");
       ScaffoldMessenger.of(context).showSnackBar(
@@ -172,6 +170,18 @@ class _RegisterPageState extends State<RegisterPage> {
         cart: [],
       );
       await addUserDetails(user);
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Registration successful!')),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ),
+        );
+      }
+     
       print('User details added successfully');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
@@ -205,8 +215,9 @@ class _RegisterPageState extends State<RegisterPage> {
               padding: const EdgeInsets.symmetric(horizontal: 25),
               child: Form(
                 key: _formKey,
-                child: Column(mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     Column(
                       children: [
@@ -442,7 +453,14 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                           ),
                           GestureDetector(
-                            onTap: widget.showLoginPage,
+                            onTap: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => LoginPage(),
+                                ),
+                              );
+                            },
                             child: Text(
                               'Login now',
                               style: TextStyle(

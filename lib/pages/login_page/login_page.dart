@@ -1,12 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:phone_store/pages/login_page/addDetail.dart';
 import 'package:phone_store/pages/login_page/forgotPass_page.dart';
+import 'package:phone_store/pages/login_page/register_page.dart';
 
 class LoginPage extends StatefulWidget {
-  final VoidCallback showRegisterPage;
+ // final VoidCallback showRegisterPage;
   static String routeName = '/login_page';
-  const LoginPage({super.key, required this.showRegisterPage});
+  const LoginPage({super.key });
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -74,25 +77,49 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _signInWithGoogle({required BuildContext context}) async {
-    GoogleSignIn googleSignIn = GoogleSignIn();
-    GoogleSignInAccount? googleUser = await googleSignIn.signIn();
-    if (googleUser != null) {
+    try {
+      GoogleSignIn googleSignIn = GoogleSignIn();
+      GoogleSignInAccount? googleUser = await googleSignIn.signIn();
+
+      if (googleUser == null) {
+        // Người dùng hủy đăng nhập
+        return;
+      }
+
       GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
       AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
+
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
       User? user = userCredential.user;
+
       if (user != null) {
-        // Successfully signed in with Google
-        Navigator.pushReplacementNamed(context, '/home_page');
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid) // Ưu tiên dùng uid thay vì email
+            .get();
+
+        if (!userDoc.exists) {
+          Navigator.pushReplacementNamed(context, AddDetailPage.routeName);
+        } else {
+          Navigator.pushReplacementNamed(context, '/homePage');
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Đăng nhập thất bại')),
+        );
       }
-    } else {
-      // User canceled the sign-in process
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Đã xảy ra lỗi: $e')),
+      );
     }
   }
+
 
   @override
   void dispose() {
@@ -230,8 +257,8 @@ class _LoginPageState extends State<LoginPage> {
                   width: double.infinity,
                   height: 50,
                   child: ElevatedButton(
-                    onPressed: () {
-                      _signInWithGoogle(context: context);
+                    onPressed: () async { 
+                     await _signInWithGoogle(context: context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 235, 235, 235),
@@ -271,7 +298,14 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: widget.showRegisterPage,
+                        onTap:  () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RegisterPage(),
+                            ),
+                          );
+                        },
                         child: Text(
                           'Sign up',
                           style: TextStyle(
@@ -321,7 +355,7 @@ class LoginForm extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextFormField(
-            autofocus: false, 
+            autofocus: false,
             obscureText: obscureText ?? false,
             obscuringCharacter: '*',
             readOnly: readOnly ?? false,

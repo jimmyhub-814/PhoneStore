@@ -18,6 +18,11 @@ class _FavoriteItemState extends State<FavoriteItem> {
     var productList = Provider.of<ProductProvider>(context).items;
     var productItem =
         productList.firstWhere((product) => product.id == widget.id);
+    if (Provider.of<ProductProvider>(context).isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     return GestureDetector(
       onTap: (() {
         Navigator.pushNamed(context, PhoneProfilePage.routeName, arguments: {

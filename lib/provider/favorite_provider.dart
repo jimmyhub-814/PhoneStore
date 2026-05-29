@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';  
+import 'package:flutter/material.dart';
 
 class FavoriteProvider extends ChangeNotifier {
   String userId = FirebaseAuth.instance.currentUser!.uid;
@@ -10,7 +10,7 @@ class FavoriteProvider extends ChangeNotifier {
   List<String> _favorite = [];
   List<String> get favorite => [..._favorite];
   bool _isLoading = true;
-  bool get isLoading => _isLoading; 
+  bool get isLoading => _isLoading;
 
   FavoriteProvider() {
     loadFavorite();
@@ -24,7 +24,7 @@ class FavoriteProvider extends ChangeNotifier {
   }
 
 //ADD TO favorite
-  void toggleFavorite(String id) {  
+  void toggleFavorite(String id) async{
     String? favoriteItem = _favorite.firstWhereOrNull((item) {
       return item == id;
     });
@@ -38,6 +38,7 @@ class FavoriteProvider extends ChangeNotifier {
     }
 
     _uploadFavoriteToFirebase(userId, _favorite);
+    await loadFavorite();
     notifyListeners();
   }
 
@@ -58,17 +59,14 @@ class FavoriteProvider extends ChangeNotifier {
     notifyListeners();
   }
 //SAVE DATA
- 
+
   Future<void> _uploadFavoriteToFirebase(
       String userId, List<String> favoriteList) async {
-    return FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .update({
+    return FirebaseFirestore.instance.collection('users').doc(userId).update({
       'favorite': favoriteList,
     });
   }
- 
+
   Future<List<String>> _getFavoriteList(String userId) async {
     try {
       final userFavoriteRef =
@@ -80,7 +78,7 @@ class FavoriteProvider extends ChangeNotifier {
 
         // Kiểm tra xem trường 'favorite' có phải là một danh sách hay không và trả về các giá trị đã map.
         return favoriteData.map((item) => item.toString()).toList();
-            } else {
+      } else {
         // Xử lý trường hợp không tìm thấy tài liệu người dùng
         print("Không tìm thấy tài liệu người dùng.");
         return [];
@@ -91,5 +89,4 @@ class FavoriteProvider extends ChangeNotifier {
       return [];
     }
   }
-
 }

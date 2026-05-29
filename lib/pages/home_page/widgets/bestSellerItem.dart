@@ -31,8 +31,8 @@ class _BestSellerItemState extends State<BestSellerItem> {
         const SizedBox(
           height: 15,
         ),
-       SizedBox(
-          height: size.width / 5 + 5,
+        SizedBox(
+          height: size.width / 4.9,
           child: StreamBuilder(
             stream: Provider.of<ProductProvider>(context, listen: false)
                 .streamAllProducts(),
@@ -57,19 +57,18 @@ class _BestSellerItemState extends State<BestSellerItem> {
                     final product = products[index];
                     return GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(
-                            context, PhoneProfilePage.routeName,
+                        Navigator.pushNamed(context, PhoneProfilePage.routeName,
                             arguments: {
                               "id": product.id,
                             });
                       },
-                      child: Container( 
+                      child: Container(
                         margin: index != products.length - 1
                             ? const EdgeInsets.only(right: 15)
                             : const EdgeInsets.only(right: 0),
-                      padding: index != 0 ? const EdgeInsets.only(
-                           top: 5
-                       ): const EdgeInsets.only(top: 5, left: 5),
+                        padding: index != 0
+                            ? const EdgeInsets.only(top: 5)
+                            : const EdgeInsets.only(top: 5, left: 5),
                         width: size.width / 1.8,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -80,14 +79,14 @@ class _BestSellerItemState extends State<BestSellerItem> {
                                 SizedBox(
                                   height: size.width / 5,
                                   child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
+                                    borderRadius: BorderRadius.circular(10),
                                     child: Image.network(
-                                    product.phoneImage,
-                                    fit: BoxFit.cover, 
-                                    width: size.width / 5,
+                                      product.phoneImage,
+                                      fit: BoxFit.cover,
+                                      width: size.width / 5,
                                     ),
                                   ),
-                                ), 
+                                ),
                                 Positioned(
                                   top: -5,
                                   left: -5,
@@ -102,8 +101,7 @@ class _BestSellerItemState extends State<BestSellerItem> {
                                           color: Colors.white,
                                         ),
                                         child: InkWell(
-                                          splashColor:
-                                              Colors.transparent, 
+                                          splashColor: Colors.transparent,
                                           borderRadius:
                                               BorderRadius.circular(14),
                                           onTap: () {
@@ -158,13 +156,36 @@ class _BestSellerItemState extends State<BestSellerItem> {
                                   ),
                                   Row(
                                     children: [
-                                      Text(
-                                       // product.phoneVote.toString(),
-                                       '0',
-                                        style: const TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                      FutureBuilder<String>(
+                                        future: Provider.of<ProductProvider>(
+                                                context,
+                                                listen: false)
+                                            .totalFeedBack(product.id),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState == ConnectionState.waiting) {
+                                            return const SizedBox(
+                                              width: 20,
+                                              height: 10,
+                                              child: CircularProgressIndicator(strokeWidth: 1),
+                                            );
+                                          } else if (snapshot.hasError) {
+                                            return const Text(
+                                              '0',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            );
+                                          } else {
+                                            return Text(
+                                              snapshot.data ?? '1',
+                                              style: const TextStyle(
+                                                fontSize: 10,
+                                                fontWeight: FontWeight.w500,
+                                              ),
+                                            );
+                                          }
+                                        },
                                       ),
                                       const Icon(
                                         Icons.star,

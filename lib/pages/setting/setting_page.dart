@@ -12,13 +12,12 @@ class _SettingPageState extends State<SettingPage> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Switch(
-        value: isOn,
-        onChanged: (value) {
-          setState(() {
-            isOn = value;
-          });
-        },
+      child: Text(
+        'Trang đang được phát triển',
+        style: TextStyle(
+          fontSize: 16, 
+          color: Color.fromRGBO(203, 109, 128, 1),
+        ),
       ),
     );
   }

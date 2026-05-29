@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:phone_store/app_constant.dart';
-import 'package:phone_store/firebase_options.dart';
-import 'package:phone_store/auth/main_page.dart';
+import 'package:phone_store/auth/authGate.dart';
+import 'package:phone_store/firebase_options.dart'; 
 import 'package:phone_store/pages/account/account.dart';
 import 'package:phone_store/pages/account/widgets/cancelOrder.dart';
 import 'package:phone_store/pages/account/widgets/changeInfoOrder.dart';
@@ -18,6 +18,7 @@ import 'package:phone_store/pages/home_page/home_page.dart';
 import 'package:phone_store/pages/account/widgets/changePass_page.dart';
 import 'package:phone_store/pages/home_page/widgets/buyItem.dart';
 import 'package:phone_store/pages/home_page/widgets/home_body.dart';
+import 'package:phone_store/pages/login_page/addDetail.dart';
 import 'package:phone_store/pages/login_page/verifyOTP.dart';
 import 'package:phone_store/pages/notifications/notification.dart';
 import 'package:phone_store/pages/profile/phone_profile.dart';
@@ -58,6 +59,17 @@ void main() async {
     emailTheme: EmailTheme.v1,
     otpLength: 4,
   );
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return Material(
+      color: Colors.red,
+      child: Center(
+        child: Text(
+          details.exceptionAsString(),
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  };
   // debugPaintSizeEnabled = true;
   runApp(
     MultiProvider(
@@ -100,7 +112,7 @@ class MyApp extends StatelessWidget {
           title: 'Flutter ',
           initialRoute: '/',
           routes: {
-            '/': (context) => MainPage(),
+            '/': (context) => AuthGate(),
             '/homePage': (context) => HomePage(),
             '/homeBody': (context) => HomeBody(),
             '/category': (context) => CategoryPage(),
@@ -119,6 +131,7 @@ class MyApp extends StatelessWidget {
             '/changeOrderInfo': (context) => ChangeOrderInfo(),
             '/cancelOrder': (context) => CancelOrderPage(),
             '/feedBackPage': (context) => FeedBackPage(),
+            '/add_detail_page': (context) => AddDetailPage(),
           },
         ),
       ),

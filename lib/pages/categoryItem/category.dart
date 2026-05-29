@@ -18,7 +18,13 @@ class _CategoryPageState extends State<CategoryPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(data['categoryName']),
+        foregroundColor: Color.fromRGBO(203, 89, 128, 1),
+        title: Text(
+          data['categoryName'],
+          style: TextStyle(
+            color: Color.fromRGBO(203, 89, 128, 1),
+          ),
+        ),
       ),
       body: StreamBuilder(
         stream: Provider.of<ProductProvider>(context, listen: false)
@@ -48,7 +54,7 @@ class _CategoryPageState extends State<CategoryPage> {
             print("Products found: ${products.length}");
 
             return GridView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,

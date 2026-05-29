@@ -90,7 +90,7 @@ class _BuyItemState extends State<BuyItem> {
       print('Stripe exception: ${e.error.localizedMessage}');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-            content: Text("Thanh toán thất bại: ${e.error.localizedMessage}")),
+            content: Text("Thanh toán thất bại")),
       );
       return false;
     } catch (e) {

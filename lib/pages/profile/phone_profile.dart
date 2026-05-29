@@ -1,9 +1,10 @@
-import 'package:collection/collection.dart';
+import 'package:collection/collection.dart'; 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:phone_store/models/cart.dart';
 import 'package:phone_store/models/products.dart';
 import 'package:phone_store/pages/home_page/widgets/buyItem.dart';
+import 'package:phone_store/pages/search/search_page.dart';
 import 'package:phone_store/provider/cart_provider.dart';
 import 'package:phone_store/pages/shopping_page/shopping_page.dart';
 import 'package:phone_store/provider/favorite_provider.dart';
@@ -19,9 +20,7 @@ class PhoneProfilePage extends StatefulWidget {
 }
 
 class _PhoneProfilePageState extends State<PhoneProfilePage> {
-  @override
-  bool hasShownSnackbar = false;
-
+ 
   void addToCart(String id, int quantity) {
     final cartProvider = context.read<CartProvider>();
 
@@ -87,21 +86,46 @@ class _PhoneProfilePageState extends State<PhoneProfilePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Expanded(
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                          prefixIcon: Icon(
-                            Icons.search,
-                            size: 16,
-                            color: Colors.black,
-                          ),
-                          hintText: 'Tìm kiếm',
-                          hintStyle: TextStyle(fontSize: 11),
-                          fillColor: Colors.white,
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide.none,
-                            borderRadius: BorderRadius.circular(12),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SearchPage()),
+                          );
+                        },
+                        child: Hero(
+                          tag: 'search-bar',
+                          child: Material(
+                            color: Colors.transparent,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(11),
+                                  color: Colors.white),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Icon(
+                                      Icons.search,
+                                      size: 18,
+                                      color:
+                                          const Color.fromARGB(255, 82, 82, 82),
+                                    ),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      'Tìm kiếm',
+                                      style: TextStyle(
+                                          color: const Color.fromARGB(
+                                              255, 82, 82, 82)),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -176,24 +200,39 @@ class _PhoneProfilePageState extends State<PhoneProfilePage> {
                                           Consumer<FavoriteProvider>(
                                             builder:
                                                 (context, provider, child) {
-                                              return Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 20),
+                                              return Container(
+                                                padding: EdgeInsets.all(
+                                                  4,
+                                                ),
+                                                margin: const EdgeInsets.only(
+                                                  right: 20,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255,
+                                                              225,
+                                                              225,
+                                                              225),
+                                                      width:
+                                                          2), // viền màu xanh
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20), // bo góc nếu cần
+                                                ),
                                                 child: InkWell(
                                                   onTap: () {
                                                     provider.toggleFavorite(
                                                         product.id);
                                                   },
                                                   child: Icon(
-                                                    provider.checkItem(
-                                                            product.id)
-                                                        ? Icons.favorite
-                                                        : Icons.favorite_border,
+                                                    Icons.favorite,
                                                     color: provider.checkItem(
                                                             product.id)
                                                         ? Colors.red
-                                                        : const Color(
-                                                            0xffCBCBCB),
+                                                        : const Color.fromARGB(
+                                                            255, 225, 225, 225),
                                                     size: 20,
                                                   ),
                                                 ),
@@ -307,8 +346,164 @@ class _PhoneProfilePageState extends State<PhoneProfilePage> {
                                           fontWeight: FontWeight.w700,
                                         ),
                                       ),
+                                      FutureBuilder(
+                                        future: Provider.of<ProductProvider>(
+                                                context)
+                                            .getFeedBack(data['id']),
+                                        builder: (context, snapshot) {
+                                          final ValueNotifier<bool> isExpanded =
+                                              ValueNotifier(false);
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          }
+                                          if (!snapshot.hasData ||
+                                              snapshot.data == null ||
+                                              (snapshot.data as List).isEmpty) {
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: 10,
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                  "Không có đánh giá cho sản phẩm này",
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w700,
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                          final feedbacks = snapshot.data!;
+
+                                          return ValueListenableBuilder(
+                                            valueListenable: isExpanded,
+                                            builder: (context, value, _) {
+                                              return Column(
+                                                children: [
+                                                  ...feedbacks
+                                                      .asMap()
+                                                      .entries
+                                                      .map(
+                                                    (entry) {
+                                                      int index = entry.key;
+                                                      var item = entry.value;
+                                                      if (index > 0 && !value)
+                                                        return SizedBox
+                                                            .shrink();
+                                                      return ListTile(
+                                                        title: FutureBuilder(
+                                                          future: Provider.of<
+                                                                      ProductProvider>(
+                                                                  context)
+                                                              .getUserName(
+                                                                  item.userId),
+                                                          builder: (context,
+                                                              snapshot) {
+                                                            final userName =
+                                                                snapshot.data;
+                                                            return snapshot
+                                                                        .connectionState ==
+                                                                    ConnectionState
+                                                                        .waiting
+                                                                ? Text(
+                                                                    "Đang tải tên người dùng...")
+                                                                : Text(
+                                                                    userName ??
+                                                                        'Người dùng không xác định',
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w700,
+                                                                    ),
+                                                                  );
+                                                          },
+                                                        ),
+                                                        subtitle: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Row(
+                                                              children:
+                                                                  List.generate(
+                                                                item.vote,
+                                                                (index) => Icon(
+                                                                  Icons.star,
+                                                                  color: Colors
+                                                                      .yellow,
+                                                                  size: 15,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Text(item
+                                                                .feedBackText)
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                  ).toList(),
+                                                  if (feedbacks.length > 1)
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        isExpanded.value =
+                                                            !isExpanded.value;
+                                                      },
+                                                      style:
+                                                          TextButton.styleFrom(
+                                                        padding:
+                                                            EdgeInsets.zero,
+                                                        minimumSize: Size(0, 0),
+                                                        tapTargetSize:
+                                                            MaterialTapTargetSize
+                                                                .shrinkWrap,
+                                                        splashFactory: NoSplash
+                                                            .splashFactory,
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Text(
+                                                            value
+                                                                ? "Ẩn bớt"
+                                                                : "Xem thêm",
+                                                            style: TextStyle(
+                                                                fontSize: 11,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                                color: Colors
+                                                                    .grey),
+                                                          ),
+                                                          Icon(
+                                                            value
+                                                                ? Icons
+                                                                    .keyboard_arrow_up
+                                                                : Icons
+                                                                    .keyboard_arrow_down,
+                                                            size: 12,
+                                                            color: Colors.grey,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
+                                      ),
                                       SizedBox(
-                                        height: 20,
+                                        height: 10,
                                       ),
                                       Text(
                                         'Sản phẩm liên quan',
@@ -526,17 +721,13 @@ class _PhoneProfilePageState extends State<PhoneProfilePage> {
                                                     );
                                                   },
                                                 )
-                                              : SizedBox(
-                                                  height: size.height -
-                                                      (size.width * 1.72),
-                                                  child: Center(
-                                                    child: Text(
-                                                      'Không có sản phẩm nào',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                      ),
+                                              : Center(
+                                                  child: Text(
+                                                    'Không có sản phẩm nào',
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w700,
                                                     ),
                                                   ),
                                                 );
@@ -699,28 +890,29 @@ class _PhoneProfilePageState extends State<PhoneProfilePage> {
               child: Row(
                 children: [
                   Expanded(
-                      child: ElevatedButton(
-                    onPressed: () {
-                      addToCart(product.id, counter.value);
-                    },
-                    child: Text(
-                      'Thêm vào giỏ hàng',
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 13,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        addToCart(product.id, counter.value);
+                      },
+                      child: Text(
+                        'Thêm vào giỏ hàng',
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 13,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Color(0xffb23f56),
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Color(0xffb23f56), width: 1),
+                          borderRadius: BorderRadius.circular(24.5),
+                        ),
                       ),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white,
-                      foregroundColor: Color(0xffb23f56),
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Color(0xffb23f56), width: 1),
-                        borderRadius: BorderRadius.circular(24.5),
-                      ),
-                    ),
-                  )),
+                  ),
                   Expanded(
                     child: GestureDetector(
                       onTap: () {

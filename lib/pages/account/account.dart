@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'; 
 import 'package:phone_store/pages/account/widgets/order_status.dart';
 import 'package:phone_store/pages/account/widgets/user_info.dart';
 
@@ -198,7 +198,10 @@ class _AccountPageState extends State<AccountPage> {
                               ),
                               ElevatedButton(
                                 onPressed: () {
-                                  FirebaseAuth.instance.signOut();
+                                 Navigator.of(context).pop();
+                                    FirebaseAuth.instance.signOut();
+                                    Navigator.pushNamed(
+                                        context, '/');
                                 },
                                 child: Text('TIẾP TỤC'),
                               ),

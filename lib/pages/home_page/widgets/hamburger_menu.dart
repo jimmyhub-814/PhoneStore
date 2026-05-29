@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:phone_store/auth/main_page.dart';
+import 'package:flutter/material.dart'; 
 import 'package:phone_store/pages/account/account.dart';
 import 'package:phone_store/pages/account/widgets/order_info.dart';
 
@@ -65,19 +64,6 @@ class _HamburgerBarState extends State<HamburgerBar> {
                     ),
                     TextButton(
                       onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Text(
-                        'Danh mục sản phẩm',
-                        style: TextStyle(
-                          fontFamily: 'Sniglet',
-                          color: Color.fromRGBO(203, 109, 128, 1),
-                          fontSize: 20,
-                        ),
-                      ),
-                    ),
-                    TextButton(
-                      onPressed: () {
                         Navigator.pushNamed(context, OrderInfoPage.routeName);
                       },
                       child: Text(
@@ -125,7 +111,7 @@ class _HamburgerBarState extends State<HamburgerBar> {
                                     Navigator.of(dialogContext).pop();
                                     FirebaseAuth.instance.signOut();
                                     Navigator.pushNamed(
-                                        context, MainPage.routeName);
+                                        context, '/');
                                   },
                                   child: Text('TIẾP TỤC'),
                                 ),

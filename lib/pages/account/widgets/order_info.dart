@@ -43,7 +43,6 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
               final data = snapshot.data;
               int waitingPrepair = 0;
               int waitingDelivery = 0;
-              int feedBack = 0;
               int completeOrder = 0;
               if (data != null) {
                 waitingPrepair = data
@@ -56,10 +55,6 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
                     .length;
                 completeOrder = data
                     .where((order) => order.orderStatus == "Đã giao")
-                    .toList()
-                    .length;
-                feedBack = data
-                    .where((order) => order.orderStatus == "Đánh giá")
                     .toList()
                     .length;
               }
@@ -263,32 +258,12 @@ class _OrderInfoPageState extends State<OrderInfoPage> {
                           },
                           child: Column(
                             children: [
-                              Stack(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.all(3.0),
-                                    child: Icon(
-                                      Icons.stars,
-                                      size: 30,
-                                    ),
-                                  ),
-                                  if (feedBack > 0)
-                                    Positioned(
-                                      right: 0,
-                                      top: 0,
-                                      child: CircleAvatar(
-                                        radius: 6,
-                                        backgroundColor: Colors.red,
-                                        child: Text(
-                                          feedBack.toString(),
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 8,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
+                              Padding(
+                                padding: EdgeInsets.all(3.0),
+                                child: Icon(
+                                  Icons.stars,
+                                  size: 30,
+                                ),
                               ),
                               SizedBox(
                                 height: 8,
